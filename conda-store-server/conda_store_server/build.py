@@ -278,6 +278,7 @@ def build_conda_docker(conda_store, build):
         find_user_conda,
         conda_info,
         precs_from_environment_prefix,
+        pip_precs_from_environment_prefix
         fetch_precs,
     )
 
@@ -289,6 +290,7 @@ def build_conda_docker(conda_store, build):
     info = conda_info(user_conda)
     download_dir = info["pkgs_dirs"][0]
     precs = precs_from_environment_prefix(conda_prefix, download_dir, user_conda)
+    pip_files = pip_precs_from_environment_prefix(conda_prefix)
     records = fetch_precs(download_dir, precs)
     base_image = conda_store.container_registry.pull_image(
         utils.callable_or_value(conda_store.default_docker_base_image, build)
@@ -298,11 +300,17 @@ def build_conda_docker(conda_store, build):
         output_image=f"{build.specification.name}:{build.build_key}",
         records=records,
         default_prefix=info["env_vars"]["CONDA_ROOT"],
+        pip_files=pip_files,
         download_dir=download_dir,
         user_conda=user_conda,
         channels_remap=info.get("channels_remap", []),
         layering_strategy="layered",
     )
+
+    conda_store.log.info(
+        f"Is {schema.BuildArtifactType.DOCKER_MANIFEST} in build_artifacts?"
+    )
+    conda_store.log.info(f"build_artifacts: {conda_store.build_artifacts}")
 
     if schema.BuildArtifactType.DOCKER_MANIFEST in conda_store.build_artifacts:
         conda_store.container_registry.store_image(conda_store, build, image)
