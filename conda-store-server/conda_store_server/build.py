@@ -312,3 +312,4 @@ def build_conda_docker(conda_store, build):
 
     if schema.BuildArtifactType.CONTAINER_REGISTRY in conda_store.build_artifacts:
         conda_store.container_registry.push_image(conda_store, build, image)
+
