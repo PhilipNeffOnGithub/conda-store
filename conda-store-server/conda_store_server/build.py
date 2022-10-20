@@ -307,11 +307,6 @@ def build_conda_docker(conda_store, build):
         layering_strategy="layered",
     )
 
-    conda_store.log.info(
-        f"Is {schema.BuildArtifactType.DOCKER_MANIFEST} in build_artifacts?"
-    )
-    conda_store.log.info(f"build_artifacts: {conda_store.build_artifacts}")
-
     if schema.BuildArtifactType.DOCKER_MANIFEST in conda_store.build_artifacts:
         conda_store.container_registry.store_image(conda_store, build, image)
 
