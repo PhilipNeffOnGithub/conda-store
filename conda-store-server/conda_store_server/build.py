@@ -301,6 +301,7 @@ def build_conda_docker(conda_store, build):
         records=records,
         default_prefix=info["env_vars"]["CONDA_ROOT"],
         pip_files=pip_files,
+        pip_env=conda_prefix,
         download_dir=download_dir,
         user_conda=user_conda,
         channels_remap=info.get("channels_remap", []),
